@@ -48,10 +48,10 @@ class BaseTest:
             print("✅ 已輸入搜尋內容")
 
             # ✅ 截圖
-            self.driver.get_screenshot_as_file("/Users/chiachenwu/Desktop/homepage.png")
+            # self.driver.get_screenshot_as_file("/Users/chiachenwu/Desktop/homepage.png")
             print("✅ 成功截圖完成")
 
-            time.sleep(1)
+            time.sleep(0.5)
 
         except NoSuchElementException:
             print("❌ 搜尋框 `input#searchBox` 找不到")
