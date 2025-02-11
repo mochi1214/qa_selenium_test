@@ -53,19 +53,22 @@ class CreditCardTest:
             product_intro_button.click()
             print("✅ 成功點擊『產品介紹』！")
 
-            time.sleep(1)
+            time.sleep(0.5)
 
             product_intro_button = WebDriverWait(self.driver, 10).until(
                 EC.element_to_be_clickable((By.XPATH, '//div[contains(@class, "cubre-a-menuSortBtn") and contains(text(), "信用卡")]'))
             )
 
             self.driver.execute_script("arguments[0].scrollIntoView(true);", product_intro_button)
-            time.sleep(1)
+            time.sleep(0.5)
 
             print("✅ 找到『信用卡』按鈕，準備點擊...")
             product_intro_button.click()
             print("✅ 成功點擊『信用卡』！")
 
+            # time.sleep(5)
+
+            self.count_credit_card_items()
 
         except Exception as e:
             print(f"❌ 點擊『產品介紹』時發生錯誤: {e}")
@@ -75,5 +78,50 @@ class CreditCardTest:
     def scroll_to_element(self, element):
         self.driver.execute_script("arguments[0].scrollIntoView(true);", element)
         time.sleep(1)
+
+
+    # 計算信用卡列表的項目數量
+    def count_credit_card_items(self):
+        try:
+            print("🔍 等待『信用卡』列表展開...")
+
+            # 等待信用卡子選單的父級元素變成 is-L2open，確保真的展開
+            WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located((By.XPATH, '//div[contains(@class, "cubre-o-menuLinkList__item") and contains(@class, "is-L2open")]'))
+            )
+
+            print("✅ 信用卡列表展開成功，開始計算項目數量...")
+
+            # 等待所有子項目可見
+            WebDriverWait(self.driver, 10).until(
+                EC.presence_of_all_elements_located((By.XPATH, '//div[contains(@class, "cubre-o-menuLinkList__content")]//a[contains(@class, "cubre-a-menuLink")]'))
+            )
+
+            # 計算信用卡的子項目
+            card_items = self.driver.find_elements(By.XPATH, '//div[contains(@class, "cubre-o-menuLinkList__item") and contains(@class, "is-L2open")]//div[contains(@class, "cubre-o-menuLinkList__content")]//a[contains(@class, "cubre-a-menuLink")]')
+
+            # 截圖
+            time.sleep(1)
+            self.driver.get_screenshot_as_file("/Users/chiachenwu/Desktop/creditcard_item_count.png")
+
+            # **列出 9 個項目的名稱**
+            item_names = [item.text.strip() for item in card_items if item.text.strip()]
+            item_count = len(item_names)
+
+            print(f"✅ 信用卡列表共有 {item_count} 項")
+            print("📋 信用卡選單項目:")
+            for index, name in enumerate(item_names, start=1):
+                print(f"{index}. {name}")
+
+            return item_count, item_names
+
+
+        except Exception as e:
+            print(f"❌ 計算信用卡項目數量時發生錯誤: {e}")
+            return 0
+
+
+
+
 
 

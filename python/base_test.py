@@ -47,9 +47,8 @@ class BaseTest:
             search_input.send_keys("測試內容")
             print("✅ 已輸入搜尋內容")
 
-            # ✅ 截圖
+            # 截圖
             # self.driver.get_screenshot_as_file("/Users/chiachenwu/Desktop/homepage.png")
-            print("✅ 成功截圖完成")
 
             time.sleep(0.5)
 
