@@ -3,6 +3,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
 import time
 import random
 import logging
@@ -25,7 +27,8 @@ class BaseTest:
         options.add_experimental_option("mobileEmulation", mobile_emulation)
         # options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36")
 
-        self.driver = webdriver.Chrome(options=options)
+        self.driver = webdriver.Chrome(service=webdriver.ChromeService(ChromeDriverManager().install()), options=options)
+
         # 調整視窗大小
         self.driver.set_window_size(800, 1000)
 
