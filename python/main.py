@@ -5,4 +5,4 @@ if __name__ == "__main__":
     my_instance = MyClass(url=test_url, test_type="credit_card")
     my_instance.run_test()
 
-    input("🔵 測試完成，請按 Enter 關閉程式...")
+    # input("🔵 測試完成，請按 Enter 關閉程式...")

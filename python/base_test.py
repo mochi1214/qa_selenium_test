@@ -49,7 +49,8 @@ class BaseTest:
             print("✅ 已輸入搜尋內容")
 
             # 截圖
-            # self.driver.get_screenshot_as_file("/Users/chiachenwu/Desktop/homepage.png")
+            self.driver.get_screenshot_as_file("screenshot/homepage.png")
+            print("📸 目標網頁已截圖")
 
             time.sleep(0.5)
 

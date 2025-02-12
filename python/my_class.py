@@ -15,8 +15,6 @@ class MyClass:
 
 
     def run_test(self):
-        """確保 BaseTest 完全執行完畢，再執行 CreditCardTest"""
-        print("🚀 執行 BaseTest：開啟網站")
         self.base_test.open_website(self.url)
 
         # 確保頁面載入完畢
@@ -27,11 +25,10 @@ class MyClass:
         print("✅ BaseTest 執行完成，準備執行 CreditCardTest")
 
         if self.test:
-            print("🚀 執行 CreditCardTest：點擊選單")
             self.test.credit_card_run_test()
         else:
             print("⚠️ 未指定測試類別，僅開啟網站但不執行 CreditCardTest")
 
         # 測試完成後關閉瀏覽器
-        # self.base_test.driver.quit()
-        # print("✅ 測試完成，瀏覽器已關閉")
+        self.base_test.driver.quit()
+        print("✅ 測試完成，瀏覽器已關閉")
