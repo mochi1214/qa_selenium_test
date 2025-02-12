@@ -5,13 +5,14 @@ from base_test import BaseTest
 from credit_card_test import CreditCardTest
 
 class MyClass:
-    def __init__(self, url, test_type="credit_card"):
-        self.base_test = BaseTest()
+    def __init__(self, url, test_type="credit_card", dev_mode=False):
+        self.base_test = BaseTest(dev_mode)
         self.url = url
         self.test = None
+        self.dev_mode = dev_mode
 
         if test_type == "credit_card":
-            self.test = CreditCardTest(driver=self.base_test.driver)
+            self.test = CreditCardTest(driver=self.base_test.driver, dev_mode=dev_mode)
 
 
     def run_test(self):
@@ -29,6 +30,7 @@ class MyClass:
         else:
             print("⚠️ 未指定測試類別，僅開啟網站但不執行 CreditCardTest")
 
-        # 測試完成後關閉瀏覽器
-        self.base_test.driver.quit()
-        print("✅ 測試完成，瀏覽器已關閉")
+        if not self.dev_mode:
+            # 測試完成後關閉瀏覽器
+            self.base_test.driver.quit()
+            print("✅ 測試完成，瀏覽器已關閉")

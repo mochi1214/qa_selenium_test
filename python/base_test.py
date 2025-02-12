@@ -7,8 +7,10 @@ import time
 import random
 
 class BaseTest:
-    def __init__(self):
-        """初始化 WebDriver"""
+    def __init__(self, dev_mode):
+        # 設定開發模式
+        self.dev_mode = dev_mode
+
         options = webdriver.ChromeOptions()
         options.add_argument("--disable-blink-features=AutomationControlled")
         options.add_argument("--incognito")
@@ -21,6 +23,8 @@ class BaseTest:
         # options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36")
 
         self.driver = webdriver.Chrome(options=options)
+        # 調整視窗大小
+        self.driver.set_window_size(800, 1000)
 
 
     def open_website(self, url):
@@ -37,7 +41,6 @@ class BaseTest:
             )
             print("✅ 搜尋框已找到且可見，準備輸入測試內容")
 
-            # 避免不必要的滾動
             if not self.is_element_in_viewport(search_input):
                 print("🔍 搜尋框不在視野內，準備滾動...")
                 self.driver.execute_script("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", search_input)
@@ -49,8 +52,7 @@ class BaseTest:
             print("✅ 已輸入搜尋內容")
 
             # 截圖
-            self.driver.get_screenshot_as_file("screenshot/homepage.png")
-            print("📸 目標網頁已截圖")
+            self.take_screenshot("screenshot/homepage.png")
 
             time.sleep(0.5)
 
@@ -58,7 +60,6 @@ class BaseTest:
             print("❌ 搜尋框 `input#searchBox` 找不到")
         except Exception as e:
             print(f"❌ 測試執行時發生錯誤：{e}")
-
 
     # 檢查 CAPTCHA 是否存在
     def is_captcha_present(self):
@@ -89,3 +90,9 @@ class BaseTest:
             "return (rect.top >= 0 && rect.left >= 0 && rect.bottom <= window.innerHeight && rect.right <= window.innerWidth);",
             element
         )
+
+    def take_screenshot(self, filename):
+        # 根據模式決定是否執行截圖
+        if not self.dev_mode:
+            self.driver.get_screenshot_as_file(filename)
+            print(f"📸 已截圖: {filename}")

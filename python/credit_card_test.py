@@ -4,8 +4,9 @@ from selenium.webdriver.support import expected_conditions as EC
 import time
 
 class CreditCardTest:
-    def __init__(self, driver):
+    def __init__(self, driver, dev_mode):
         self.driver = driver
+        self.dev_mode = dev_mode
 
 
     def credit_card_run_test(self):
@@ -132,16 +133,13 @@ class CreditCardTest:
             first_active_card = block_element.find_element(By.XPATH, './/div[contains(@class, "swiper-slide-active")]')
             first_card_name = first_active_card.find_element(By.XPATH, './/div[contains(@class, "cubre-m-compareCard__title")]').text.strip()
 
-            # 先對第一張卡片截圖
-            first_screenshot_filename = f"screenshot/screenshot_card_1.png"
-            self.driver.save_screenshot(first_screenshot_filename)
-            print(f"📸 已截圖: {first_screenshot_filename}")
+            # 截圖第一張卡片
+            self.take_screenshot(f"screenshot/screenshot_card_1.png")
             print(f"✅ 預設卡片名稱：{first_card_name}")
-            screenshot_count += 1  # 增加截圖計數
+            screenshot_count += 1
 
             for index, bullet in enumerate(pagination_bullets, start=1):
                 try:
-                    # 記錄當前 active 卡片
                     old_active_card = block_element.find_element(By.XPATH, './/div[contains(@class, "swiper-slide-active")]')
 
                     print(f"🔄 點擊第 {index} 個 pagination bullet...")
@@ -152,15 +150,11 @@ class CreditCardTest:
                     new_active_card = block_element.find_element(By.XPATH, './/div[contains(@class, "swiper-slide-active")]')
 
                     if new_active_card != old_active_card:
-                        # 取得新卡片名稱
                         new_card_name = new_active_card.find_element(By.XPATH, './/div[contains(@class, "cubre-m-compareCard__title")]').text.strip()
-
                         print(f"✅ 成功切換到第 {index + 1} 張卡片 - {new_card_name}")
 
                         # 截圖
-                        screenshot_filename = f"screenshot/screenshot_card_{index+1}.png"
-                        self.driver.save_screenshot(screenshot_filename)
-                        print(f"📸 已截圖: {screenshot_filename}")
+                        self.take_screenshot(f"screenshot/screenshot_card_{index+1}.png")
                         screenshot_count += 1
 
                     else:
@@ -179,8 +173,6 @@ class CreditCardTest:
 
         except Exception as e:
             print(f"❌ 測試 Swiper 切換時發生錯誤: {e}")
-
-
 
 
     # 將元素置頂到頂部，確保按鈕可見，避免無法點擊
@@ -211,7 +203,7 @@ class CreditCardTest:
 
             # 截圖
             time.sleep(1)
-            self.driver.get_screenshot_as_file("screenshot/creditcard_item_count.png")
+            self.take_screenshot("screenshot/creditcard_item_count.png")
             print("📸 信用卡列表選單已截圖")
 
             # 列出信用卡項目的名稱
@@ -230,6 +222,12 @@ class CreditCardTest:
             print(f"❌ 計算信用卡項目數量時發生錯誤: {e}")
             return 0
 
+
+    def take_screenshot(self, filename):
+        # 根據模式決定是否執行截圖
+        if not self.dev_mode:
+            self.driver.get_screenshot_as_file(filename)
+            print(f"📸 已截圖: {filename}")
 
 
 
