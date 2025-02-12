@@ -30,6 +30,7 @@ class BaseTest:
     def open_website(self, url):
         try:
             self.driver.get(url)
+            print("------------- 第一部分 -------------")
             print(f"✅ 已開啟目標網頁： {url}")
 
             if self.is_captcha_present():

@@ -16,6 +16,7 @@ class CreditCardTest:
 
     def click_menu(self):
         try:
+            print("------------- 第二部分 -------------")
             print("🔍 等待左上角選單按鈕...")
 
             # 使用 XPath 定位選單按鈕
@@ -75,7 +76,7 @@ class CreditCardTest:
             product_intro_button = WebDriverWait(self.driver, 10).until(
                 EC.element_to_be_clickable((By.XPATH, '//a[contains(@class, "cubre-a-menuLink") and contains(text(), "卡片介紹")]'))
             )
-
+            print("------------- 第三部分 -------------")
             print("✅ 找到『信用卡介紹』按鈕，準備點擊...")
             product_intro_button.click()
             print("✅ 成功點擊『信用卡介紹』！")
