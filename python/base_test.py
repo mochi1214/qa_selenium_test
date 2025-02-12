@@ -22,6 +22,7 @@ class BaseTest:
 
         self.driver = webdriver.Chrome(options=options)
 
+
     def open_website(self, url):
         try:
             self.driver.get(url)
@@ -56,7 +57,6 @@ class BaseTest:
             print("❌ 搜尋框 `input#searchBox` 找不到")
         except Exception as e:
             print(f"❌ 測試執行時發生錯誤：{e}")
-
 
 
     # 檢查 CAPTCHA 是否存在

@@ -13,6 +13,7 @@ class MyClass:
         if test_type == "credit_card":
             self.test = CreditCardTest(driver=self.base_test.driver)
 
+
     def run_test(self):
         """確保 BaseTest 完全執行完畢，再執行 CreditCardTest"""
         print("🚀 執行 BaseTest：開啟網站")
