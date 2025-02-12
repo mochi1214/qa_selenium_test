@@ -107,15 +107,13 @@ class CreditCardTest:
         try:
             print("🔍 測試 Swiper 切換卡片...")
 
-            self.driver.execute_script("window.scrollBy(0, 100);")
-            time.sleep(1)
-
             # 等待『停發卡』區塊出現
             block_locator = (By.XPATH, '//section[@data-anchor-block="blockname06"]')
             WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(block_locator))
             block_element = self.driver.find_element(*block_locator)
 
             print("✅ 停發卡區塊已顯示，準備開始測試切換...")
+
 
             # 計算「停發信用卡」的數量
             disabled_credit_cards = block_element.find_elements(By.XPATH, './/div[contains(@class, "swiper-slide")]')
