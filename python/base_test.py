@@ -5,6 +5,9 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 import time
 import random
+import logging
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 class BaseTest:
     def __init__(self, dev_mode):
@@ -31,26 +34,26 @@ class BaseTest:
         try:
             self.driver.get(url)
             print("------------- 第一部分 -------------")
-            print(f"✅ 已開啟目標網頁： {url}")
+            logging.info(f"✅ 已開啟目標網頁： {url}")
 
             if self.is_captcha_present():
                 input("⚠️ 請手動完成 CAPTCHA 驗證，完成後按 Enter 繼續...")
 
-            print("🔍 嘗試尋找搜尋框 `input#searchBox`...")
+            logging.info("🔍 嘗試尋找搜尋框 `input#searchBox`...")
             search_input = WebDriverWait(self.driver, 30).until(
                 EC.visibility_of_element_located((By.ID, "searchBox"))
             )
-            print("✅ 搜尋框已找到且可見，準備輸入測試內容")
+            logging.info("✅ 搜尋框已找到且可見，準備輸入測試內容")
 
             if not self.is_element_in_viewport(search_input):
-                print("🔍 搜尋框不在視野內，準備滾動...")
+                logging.info("🔍 搜尋框不在視野內，準備滾動...")
                 self.driver.execute_script("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", search_input)
                 time.sleep(0.5)
 
             self.random_delay()
             time.sleep(0.5)
             search_input.send_keys("測試內容")
-            print("✅ 已輸入搜尋內容")
+            logging.info("✅ 已輸入搜尋內容")
 
             # 截圖
             self.take_screenshot("screenshot/homepage.png")
@@ -58,9 +61,9 @@ class BaseTest:
             time.sleep(0.5)
 
         except NoSuchElementException:
-            print("❌ 搜尋框 `input#searchBox` 找不到")
+            logging.info("❌ 搜尋框 `input#searchBox` 找不到")
         except Exception as e:
-            print(f"❌ 測試執行時發生錯誤：{e}")
+            logging.info(f"❌ 測試執行時發生錯誤：{e}")
 
     # 檢查 CAPTCHA 是否存在
     def is_captcha_present(self):
@@ -73,10 +76,10 @@ class BaseTest:
             pass
 
         if "robot" in self.driver.page_source.lower() or "captcha" in self.driver.page_source.lower():
-            print("檢測到 CAPTCHA")
+            print("⚠️ 檢測到 CAPTCHA")
             return True
 
-        print("未檢測到 CAPTCHA")
+        print("✅ 未檢測到 CAPTCHA")
         return False
 
 
@@ -96,4 +99,4 @@ class BaseTest:
         # 根據模式決定是否執行截圖
         if not self.dev_mode:
             self.driver.get_screenshot_as_file(filename)
-            print(f"📸 已截圖: {filename}")
+            logging.info(f"📸 已截圖: {filename}")

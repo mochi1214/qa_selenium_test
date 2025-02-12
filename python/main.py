@@ -2,7 +2,7 @@ from my_class import MyClass
 
 if __name__ == "__main__":
     # 設定開發模式
-    dev_mode = False
+    dev_mode = True
 
     if dev_mode:
         print("🛑 現在為開發模式，不會執行截圖功能")
