@@ -5,6 +5,9 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
+from appium import webdriver as appium_webdriver
+from appium.options.common import AppiumOptions
+from selenium.webdriver.chrome.service import Service as ChromeService
 import time
 import random
 import logging
@@ -12,25 +15,41 @@ import logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 class BaseTest:
-    def __init__(self, dev_mode):
-        # 設定開發模式
+    def __init__(self, dev_mode=True, platform_name="Web", device_name=None):
         self.dev_mode = dev_mode
+        self.platform_name = platform_name
+        self.device_name = device_name
+        self.driver = None
 
+        if platform_name.lower() == "web":
+            logging.info("🌍 使用 Selenium WebDriver 測試桌面瀏覽器...")
+            self.setup_selenium()
+        elif platform_name.lower() in ["ios", "android"]:
+            logging.info(f"📱 使用 Appium WebDriver 測試手機 ({platform_name})...")
+            self.setup_appium()
+        else:
+            raise ValueError(f"❌ 不支援的平台名稱: {platform_name}")
+
+
+    def setup_selenium(self):
         options = webdriver.ChromeOptions()
         options.add_argument("--disable-blink-features=AutomationControlled")
         options.add_argument("--incognito")
-        # 使用手機模式
-        mobile_emulation = {
-            "deviceMetrics": {"width": 375, "height": 812, "pixelRatio": 3.0},  # iPhone X 模擬
-            "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Mobile Safari/537.36"
-        }
-        options.add_experimental_option("mobileEmulation", mobile_emulation)
-        # options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36")
-
-        self.driver = webdriver.Chrome(service=webdriver.ChromeService(ChromeDriverManager().install()), options=options)
-
-        # 調整視窗大小
+        self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
         self.driver.set_window_size(800, 1000)
+
+
+    def setup_appium(self):
+        capabilities = AppiumOptions()
+        capabilities.set_capability("platformName", self.platform_name)
+        capabilities.set_capability("deviceName", self.device_name if self.device_name else "iPhone 14")
+        capabilities.set_capability("browserName", "Safari")
+        capabilities.set_capability("automationName", "XCUITest")
+        capabilities.set_capability("platformVersion", "16.4")
+        capabilities.set_capability("useNewWDA", True)
+
+        logging.info(f"📱 使用 Appium 測試 {self.platform_name}，設備: {self.device_name}")
+        self.driver = appium_webdriver.Remote("http://127.0.0.1:4723", options=capabilities)
 
 
     def open_website(self, url):

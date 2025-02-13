@@ -8,8 +8,8 @@ import logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 class MyClass:
-    def __init__(self, url, test_type="credit_card", dev_mode=False):
-        self.base_test = BaseTest(dev_mode)
+    def __init__(self, url, test_type="credit_card", dev_mode=False, platform_name="Web", device_name=None):
+        self.base_test = BaseTest(dev_mode, platform_name, device_name)
         self.url = url
         self.test = None
         self.dev_mode = dev_mode
@@ -20,13 +20,6 @@ class MyClass:
 
     def run_test(self):
         self.base_test.open_website(self.url)
-
-        # 確保頁面載入完畢
-        logging.info("⏳ 等待主要內容載入...")
-        WebDriverWait(self.base_test.driver, 10).until(
-            EC.presence_of_element_located((By.TAG_NAME, "body"))
-        )
-        logging.info("✅ 執行完成，準備開始執行測試")
 
         if self.test:
             self.test.credit_card_run_test()
